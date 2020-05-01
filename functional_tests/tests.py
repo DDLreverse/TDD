@@ -1,8 +1,9 @@
 from selenium import webdriver	# (1)
 import unittest
+from django.test import LiveServerTestCase
 from selenium.webdriver.common.keys import Keys
 import time
-class NewVisitorTest(unittest.TestCase):
+class NewVisitorTest(LiveServerTestCase):
 	
 	def setUp(self):
 		self.browser = webdriver.Firefox()
@@ -19,7 +20,7 @@ class NewVisitorTest(unittest.TestCase):
 		browser = webdriver.Firefox()	# (2)
 		# Edith has heard about a cool new online to-do app. She goes
 		# to check out its homepage
-		self.browser.get('http://localhost:8000')
+		self.browser.get(self.live_server_url)
 
 		# She notices the page title and header mention to-do lists
 		self.assertIn('To-Do', self.browser.title)	# (4)
@@ -48,10 +49,4 @@ class NewVisitorTest(unittest.TestCase):
 		# She visits that URL - her to-do list is still there
 		# Satisfied, she goes back to sleep
 		
-		
-if __name__ == '__main__':	# (6)
-	
-	unittest.main(warnings='ignore')	# (7)
-
-# browser.quit() #
 		
