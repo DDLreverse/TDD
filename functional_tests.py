@@ -10,8 +10,12 @@ class NewVisitorTest(unittest.TestCase):
 	def tearDown(self):
 		self.browser.quit()
 	
-	def test_can_start_a_list_and_retrieve_it_later(self):
+	def check_for_row_in_list_table(self, row_text):
+		table = self.browser.find_element_by_id('id_list_table')
+		rows = table.find_elements_by_tag_name('tr')
+		self.assertIn(row_text, [row.text for row in rows])
 	
+	def test_can_start_a_list_and_retrieve_it_later(self):
 		browser = webdriver.Firefox()	# (2)
 		# Edith has heard about a cool new online to-do app. She goes
 		# to check out its homepage
@@ -24,38 +28,29 @@ class NewVisitorTest(unittest.TestCase):
 		
 		# She is invited to enter a to-do item sreight away
 		inputbox = self.browser.find_element_by_id('id_new_item')
-		self.assertEqual(
-			inputbox.get_attribute('placeholder'),
-			'Enter a to-do item'
-		)
-		
-		# She types "Buy peacock feathers" into a text box (Edith's hobby
-		# is tying fly-fishing lures)
 		inputbox.send_keys('Buy peacock feathers')
-		# when she hits enter, the page updates, and now the page lists
-		# "1: Buy peacock feathers" as an item in a to-do list
 		inputbox.send_keys(Keys.ENTER)
 		time.sleep(1)
+		self.check_for_row_in_list_table('1: Buy peacock feathers')
 		
-		table = self.browser.find_element_by_id('id_list_table')
-		rows = table.find_elements_by_tag_name('tr')
-		self.assertTrue(
-			any(row.text == '1: Buy peacock feathers' for row in rows)
-		)
-		# There is still a text box inviting her to add another item. She
-		# enters "User peacock feathers to makee a fly" (Edith is very methodical)
-		self.fail('Finish the test!')
-		# The page updates again, and now shows both items on her lists
-
+		
+		inputbox = self.browser.find_element_by_id('id_new_item')
+		inputbox.send_keys('Use peacock feathers to make a fly')
+		inputbox.send_keys(Keys.ENTER)
+		time.sleep(1)
+		self.check_for_row_in_list_table('2: Use peacock feathers to make a fly')
+		
 		# Edith wonders whether the site will remember her list. Then she sees
 		# that the site has generated a unique URL for her --- there is some
 		# explanatory text to that effect
-
+		self.fail('Finish the test!')
+		
 		# She visits that URL - her to-do list is still there
-
 		# Satisfied, she goes back to sleep
-
+		
+		
 if __name__ == '__main__':	# (6)
+	
 	unittest.main(warnings='ignore')	# (7)
 
 # browser.quit() #
